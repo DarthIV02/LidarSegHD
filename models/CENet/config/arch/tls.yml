@@ -55,11 +55,11 @@ dataset:
   sensor:
     name: "Pandora"
     type: "spherical" # projective
-    fov_up: 40
-    fov_down: -2
+    fov_up: 35
+    fov_down: -35
     img_prop:
-      width: 1800
-      height: 40
+      width: 8096
+      height: 1024
     img_means: #range,x,y,z,signal   (40, 1800)
       - 22.26779
       - 0.0863285617643578

@@ -30,7 +30,7 @@ train:
   save_scans:  False     # False doesn't save anything, True saves som
   show_scans: True       # show scans during training
   save_batch: 1
-  workers: 6             # number of threads to get data
+  workers: 3             # number of threads to get data
 
 ################################################################################
 # postproc parameters

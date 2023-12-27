@@ -159,8 +159,5 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-# Docker
-docker_files/
-
 #Nautilus_files
 nautilus_files/

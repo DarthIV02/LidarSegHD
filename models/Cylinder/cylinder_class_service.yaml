@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cylinder-seg
+  labels:
+    k8s-app: cylinder-seg
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: cylinder-seg
+  template:
+    metadata: 
+      labels:
+        k8s-app: cylinder-seg
+    spec:
+      containers:
+      - name: tls-seg-pod
+        image: ghcr.io/darthiv02/cylinder3d_image:1.0
+        command: ["sleep", "infinity"]
+        volumeMounts:
+          - mountPath: /root/dataset
+            name: tls-data-ivannia
+          - mountPath: /root/dataset-5
+            name: tls-data-ivannia-5
+        resources:
+          limits:
+            nvidia.com/gpu: "1"
+            memory: "64G"
+            cpu: "1"
+          requests:
+             memory: "64G"
+             cpu: "1"
+      volumes:
+        - name: tls-data-ivannia
+          persistentVolumeClaim:
+            claimName: tls-data-ivannia
+        - name: tls-data-ivannia-5
+          persistentVolumeClaim:
+            claimName: tls-data-ivannia-5
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: nvidia.com/gpu.product
+                operator: In
+                values:
+                - NVIDIA-A10

@@ -16,11 +16,13 @@ RUN wget https://repo.anaconda.com/archive/Anaconda3-2023.03-1-Linux-x86_64.sh &
 ENV PATH=$PATH:/root/anaconda3/bin/
 
 ## install repo / conda environment (repo instructions)
-RUN git clone --depth=1 https://github.com/DarthIV02/LidarSegHD /root/LidarSegHD
+RUN git clone --depth=1 https://github.com/huixiancheng/CENet /root/CENET
 RUN conda create -n cenet python=3.8 -y && \
     conda init bash
 
-WORKDIR /root/LidarSegHD
+WORKDIR /root/CENET
+
+COPY . .
 
 # make RUN commands use the new environment
 SHELL ["conda", "run", "--no-capture-output", "-n", "cenet", "/bin/bash", "-c"]

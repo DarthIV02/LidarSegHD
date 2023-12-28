@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: class-dep
+  labels:
+    k8s-app: class-dep
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      k8s-app: class-dep
+  template:
+    metadata: 
+      labels:
+        k8s-app: class-dep
+    spec:
+      containers:
+      - name: tls-class-pod-ubuntu16
+        image: ghcr.io/darthiv02/sqn_model_complete:1.1
+        command: ["sleep", "infinity"]
+        volumeMounts:
+          - mountPath: /root/SQN/vol
+            name: tls-class-vol
+          - mountPath: /root/SQN/vol-aug
+            name: tls-class-vol-aug
+        resources:
+          limits:
+            nvidia.com/gpu: "1"
+            memory: "16G"
+            cpu: "1"
+          requests:
+             memory: "16G"
+             cpu: "1"
+      volumes:
+        - name: tls-class-vol
+          persistentVolumeClaim:
+            claimName: tls-class-vol
+        - name: tls-class-vol-aug
+          persistentVolumeClaim:
+            claimName: tls-class-vol-aug
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: nvidia.com/gpu.product
+                operator: In
+                values:
+                - NVIDIA-GeForce-GTX-1080-Ti

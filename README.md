@@ -15,3 +15,17 @@ Can be run with the package _cenet_image:1.0_ in this repository. To start compi
 ```bash
 python train_tls.py -d /root/dataset/tls/dense_dataset_semantic/ -ac config/arch/tls.yml -n res
 ```
+
+### [SQN](https://github.com/QingyongHu/SQN)
+Can be run with the package _cenet_image:1.0_ in this repository. To start compiling run the following command:
+
+```bash
+python train_tls.py -d /root/dataset/tls/dense_dataset_semantic/ -ac config/arch/tls.yml -n res
+```
+
+### [Cylinder3D](https://github.com/xinge008/Cylinder3D)
+Can be run with the package _cylinder3d_image:1.0_ in this repository. To start compiling run the following command:
+
+```bash
+python train_tls.py -d /root/dataset/tls/dense_dataset_semantic/ -ac config/arch/tls.yml -n res
+```

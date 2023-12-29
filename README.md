@@ -20,7 +20,7 @@ python train_tls.py -d /root/dataset/tls/dense_dataset_semantic/ -ac config/arch
 Can be run with the package _cenet_image:1.0_ in this repository. To start compiling run the following command:
 
 ```bash
-python train_tls.py -d /root/dataset/tls/dense_dataset_semantic/ -ac config/arch/tls.yml -n res
+python main_TLS_kitti.py --mode train --gpu 0 --labeled_point 100%
 ```
 
 ### [Cylinder3D](https://github.com/xinge008/Cylinder3D)

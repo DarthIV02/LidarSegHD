@@ -1,4 +1,4 @@
-FROM nvidia/cuda:9.0-cudnn7-devel-ubuntu16.04
+FROM ogvalt/cuda:9.0-cudnn7.0-devel-ubuntu16.04
 
 ENV DEBIAN_FRONTEND='noninteractive'
 
@@ -17,7 +17,7 @@ RUN wget https://repo.anaconda.com/archive/Anaconda3-2023.03-1-Linux-x86_64.sh &
 ENV PATH=$PATH:/root/anaconda3/bin/
 
 ## install repo / conda environment (repo instructions)
-RUN git clone --depth=1 https://github.com/QingyongHu/SQN /root/SQN && \
+# RUN git clone --depth=1 https://github.com/QingyongHu/SQN /root/SQN && \
 RUN mkdir /root/SQN &&\
     conda create -n sqn python=3.5 -y && \
     conda init bash
@@ -37,6 +37,7 @@ yes | pip install --default-timeout=100 seaborn && \
 yes | pip install  --default-timeout=100 tensorflow-gpu==1.11 && \
 yes | apt-get install p7zip-full && \ 
 yes | apt-get install vim && \
+yes | apt-get install tmux && \
 sh compile_op.sh
 
 RUN echo 'conda activate sqn' >> /root/.bashrc

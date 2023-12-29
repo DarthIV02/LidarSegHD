@@ -1,28 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: class-dep
+  name: sqn-seg
   labels:
-    k8s-app: class-dep
+    k8s-app: sqn-seg
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      k8s-app: class-dep
+      k8s-app: sqn-seg
   template:
     metadata: 
       labels:
-        k8s-app: class-dep
+        k8s-app: sqn-seg
     spec:
       containers:
-      - name: tls-class-pod-ubuntu16
-        image: ghcr.io/darthiv02/sqn_model_complete:1.1
+      - name: sqn-seg-pod
+        image: ghcr.io/darthiv02/img-seg-lidar:1.2
         command: ["sleep", "infinity"]
         volumeMounts:
-          - mountPath: /root/SQN/vol
-            name: tls-class-vol
-          - mountPath: /root/SQN/vol-aug
-            name: tls-class-vol-aug
+          - mountPath: /root/dataset
+            name: tls-data-ivannia
+          - mountPath: /root/dataset-5
+            name: tls-data-ivannia-5
         resources:
           limits:
             nvidia.com/gpu: "1"
@@ -32,12 +32,12 @@ spec:
              memory: "16G"
              cpu: "1"
       volumes:
-        - name: tls-class-vol
+        - name: tls-data-ivannia
           persistentVolumeClaim:
-            claimName: tls-class-vol
-        - name: tls-class-vol-aug
+            claimName: tls-data-ivannia
+        - name: tls-data-ivannia-5
           persistentVolumeClaim:
-            claimName: tls-class-vol-aug
+            claimName: tls-data-ivannia-5
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

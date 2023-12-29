@@ -59,7 +59,7 @@ class Trainer():
                      "best_val_iou": 0}
 
         # get the data
-        from dataset.kitti.parser import Parser
+        from dataset.tls.parser import Parser
         self.parser = Parser(root=self.datadir,
                                           train_sequences=self.DATA["split"]["train"], # self.DATA["split"]["valid"] + self.DATA["split"]["train"] if finetune with valid
                                           valid_sequences=self.DATA["split"]["valid"],
@@ -71,7 +71,6 @@ class Trainer():
                                           sensor=self.ARCH["dataset"]["sensor"],
                                           max_points=self.ARCH["dataset"]["max_points"],
                                           batch_size=self.ARCH["train"]["batch_size"],
-                                          workers=self.ARCH["train"]["workers"],
                                           gt=True,
                                           shuffle_train=True)
 

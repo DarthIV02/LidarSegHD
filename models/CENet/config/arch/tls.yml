@@ -30,7 +30,7 @@ train:
   save_scans:  False     # False doesn't save anything, True saves som
   show_scans: True       # show scans during training
   save_batch: 1
-  workers: 6             # number of threads to get data
+  #workers: 6             # number of threads to get data
 
 ################################################################################
 # postproc parameters
@@ -51,7 +51,7 @@ post:
 dataset:
   labels: "tls"
   scans: "tls"
-  max_points: 60000 # max of any scan in dataset
+  max_points: 1700000 # max of any scan in dataset
   sensor:
     name: "Pandora"
     type: "spherical" # projective
@@ -62,15 +62,15 @@ dataset:
       height: 40
     img_means: #range,x,y,z,signal   (40, 1800)
       - 22.26779
-      - 0.0863285617643578
-      - 0.18399865384739703
-      - 0.3658187418819491
+      - 0.047988741803219784
+      - 0.014624937683793257 
+      - 0.31810294615712037
       - 13.875261
     img_stds: #range,x,y,z,signal
       - 17.735949
-      - 5.731247005339678
-      - 5.673385110231461
-      - 0.5088420977744356
+      - 4.116406713529827
+      - 4.047795017791086 
+      - 0.4673269793107607
       - 14.0925865
       
 #    img_means: #range,x,y,z,signal    (64, 1024)

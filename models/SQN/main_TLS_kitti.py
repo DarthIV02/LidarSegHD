@@ -11,7 +11,7 @@ import os, argparse, pickle, shutil
 
 class SemanticKITTI:
     def __init__(self, test_id, labeled_point, gen_pseudo, retrain):
-        self.name = 'dense_sequence_semanti'
+        self.name = 'dense_sequence_semantic'
         # set your dataset path here
         root_path = './dataset/'
         self.dataset_path = join(root_path, self.name)

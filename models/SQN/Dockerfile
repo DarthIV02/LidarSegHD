@@ -1,4 +1,5 @@
-FROM ogvalt/cuda:9.0-cudnn7.0-devel-ubuntu16.04
+#FROM ogvalt/cuda:9.0-cudnn7.0-devel-ubuntu16.04
+FROM nvidia/cuda:11.0.3-cudnn8-devel-ubuntu16.04
 
 ENV DEBIAN_FRONTEND='noninteractive'
 
@@ -6,9 +7,11 @@ ENV DEBIAN_FRONTEND='noninteractive'
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys A4B469963BF863CC
 
 ## apt installs
-RUN apt update && \
-    apt install -y git wget && \
-    apt install -y ffmpeg libsm6 libxext6
+RUN apt update && apt-get upgrade -y
+RUN apt-get install -y ffmpeg libsm6 libxext6
+RUN apt-get install -y wget
+RUN apt-get install -y git
+#RUN apt install -y nvidia-cuda-toolkit
 
 ## install conda
 RUN wget https://repo.anaconda.com/archive/Anaconda3-2023.03-1-Linux-x86_64.sh && \
@@ -17,9 +20,8 @@ RUN wget https://repo.anaconda.com/archive/Anaconda3-2023.03-1-Linux-x86_64.sh &
 ENV PATH=$PATH:/root/anaconda3/bin/
 
 ## install repo / conda environment (repo instructions)
-# RUN git clone --depth=1 https://github.com/QingyongHu/SQN /root/SQN && \
-RUN mkdir /root/SQN &&\
-    conda create -n sqn python=3.5 -y && \
+RUN git clone --depth=1 https://github.com/QingyongHu/SQN /root/SQN
+RUN conda create -n sqn python=3.5 -y && \
     conda init bash
 
 WORKDIR /root/SQN

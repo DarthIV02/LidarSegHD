@@ -15,8 +15,8 @@ spec:
         k8s-app: cylinder-seg
     spec:
       containers:
-      - name: tls-seg-pod
-        image: ghcr.io/darthiv02/cylinder3d_image:1.0
+      - name: cylinder-seg-pod
+        image: ghcr.io/darthiv02/cylinder3d_image:1.1
         command: ["sleep", "infinity"]
         volumeMounts:
           - mountPath: /root/dataset

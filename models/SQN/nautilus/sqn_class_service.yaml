@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: sqn-seg-pod
-        image: ghcr.io/darthiv02/img-seg-lidar:1.2
+        image: ghcr.io/darthiv02/sqn_model_complete:1.3
         command: ["sleep", "infinity"]
         volumeMounts:
           - mountPath: /root/dataset

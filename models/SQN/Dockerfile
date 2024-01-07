@@ -1,5 +1,6 @@
 #FROM ogvalt/cuda:9.0-cudnn7.0-devel-ubuntu16.04
-FROM nvidia/cuda:11.0.3-cudnn8-devel-ubuntu16.04
+#FROM nvidia/cuda:11.0.3-cudnn8-devel-ubuntu16.04
+FROM tobycheese/cuda:9.0-cudnn7-devel-ubuntu18.04
 
 ENV DEBIAN_FRONTEND='noninteractive'
 

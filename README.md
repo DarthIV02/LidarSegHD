@@ -17,7 +17,7 @@ python train_tls.py -d /root/dataset/tls/dense_dataset_semantic/ -ac config/arch
 ```
 
 ### [SQN](https://github.com/QingyongHu/SQN)
-Can be run with the package _cenet_image:1.0_ in this repository. To start compiling run the following command:
+Can be run with the package _cenet_image:1.3_ in this repository. To start compiling run the following command:
 
 ```bash
 python main_TLS_kitti.py --mode train --gpu 0 --labeled_point 100%

@@ -14,9 +14,9 @@ RUN apt-get install -y vim tmux
 RUN apt install -y build-essential
 
 # get newer version of cmake
-RUN wget https://apt.kitware.com/kitware-archive.sh
-RUN chmod +x kitware-archive.sh
-RUN ./kitware-archive.sh
+#RUN wget https://apt.kitware.com/kitware-archive.sh
+#RUN chmod +x kitware-archive.sh
+#RUN ./kitware-archive.sh
 
 ## install conda
 RUN wget https://repo.anaconda.com/archive/Anaconda3-2023.03-1-Linux-x86_64.sh && \
@@ -30,7 +30,7 @@ RUN git clone --recursive --depth 1 https://github.com/xinge008/Cylinder3D /root
 WORKDIR /root/Cylinder3D
 COPY . .
 
-RUN conda create -n cylinder -y && \
+RUN conda create -n cylinder -y python=3.7 && \
     conda init bash
 
 # make RUN commands use the new environment

@@ -22,7 +22,7 @@ ENV PATH=$PATH:/root/anaconda3/bin/
 
 ## install repo / conda environment (repo instructions)
 RUN git clone --depth=1 https://github.com/QingyongHu/SQN /root/SQN
-RUN conda create -n sqn python=3.5 -y && \
+RUN conda create -n sqn python=3.7 -y && \
     conda init bash
 
 WORKDIR /root/SQN

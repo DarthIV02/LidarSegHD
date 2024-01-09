@@ -27,5 +27,5 @@ python main_TLS_kitti.py --mode train --gpu 0 --labeled_point 100%
 Can be run with the package _cylinder3d_image:1.0_ in this repository. To start compiling run the following command:
 
 ```bash
-python train_tls.py -d /root/dataset/tls/dense_dataset_semantic/ -ac config/arch/tls.yml -n res
+sh train.sh
 ```

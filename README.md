@@ -27,5 +27,6 @@ python main_TLS_kitti.py --mode train --gpu 0 --labeled_point 100%
 Can be run with the package _cylinder3d_image:1.0_ in this repository. To start compiling run the following command:
 
 ```bash
-sh train.sh
+sh train.sh #training
+python demo_folder.py --demo-folder /root/dataset/dense_dataset_semantic/sequences/01/velodyne/ --save-folder ./save --demo-label-folder /root/dataset/dense_dataset_semantic/sequences/01/labels/ # testing?
 ```

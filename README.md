@@ -20,6 +20,7 @@ python train_tls.py -d /root/dataset/tls/dense_dataset_semantic/ -ac config/arch
 Can be run with the package _cenet_image:1.3_ in this repository. To start compiling run the following command:
 
 ```bash
+sh tf_interpolate_compile.sh # at /SQN/tf_ops/3d_interpolation
 python main_TLS_kitti.py --mode train --gpu 0 --labeled_point 100%
 ```
 

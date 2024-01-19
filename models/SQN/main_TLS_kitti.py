@@ -11,9 +11,9 @@ import os, argparse, pickle, shutil
 
 class SemanticKITTI:
     def __init__(self, test_id, labeled_point, gen_pseudo, retrain):
-        self.name = 'dense_sequence_semantic'
+        self.name = 'sequences'
         # set your dataset path here
-        root_path = './dataset/'
+        root_path = '/root/dataset/dense_dataset_numpy'
         self.dataset_path = join(root_path, self.name)
         self.label_to_names = {0: 'unlabel', 1: 'alive', 2: '1h', 3: '10h', 4: '100h', 5: '1000h'}
         self.num_classes = len(self.label_to_names)
@@ -37,9 +37,7 @@ class SemanticKITTI:
 
         self.possibility = []
         self.min_possibility = []
-        self.num_per_class = np.array([55437630, 320797, 541736, 2578735, 3274484, 552662, 184064, 78858,
-                                       240942562, 17294618, 170599734, 6369672, 230413074, 101130274, 476491114,
-                                       9833174, 129609852, 4506626, 1168181]) #Change this
+        self.num_per_class = np.array([9257848, 12356048, 2259580, 982256, 1869055]) #Change this
         if '%' in labeled_point:
             r = float(labeled_point[:-1]) / 100
             self.num_with_anno_per_batch = max(int(cfg.num_points * r), 1)
@@ -132,7 +130,8 @@ class SemanticKITTI:
     def get_data(self, file_path):
         seq_id = file_path.split('/')[-3]
         frame_id = file_path.split('/')[-1][:-4]
-        kd_tree_path = join(self.dataset_path, seq_id, 'KDTree', frame_id + '.pkl')
+        new_dataset = self.dataset_path + '_' + str(cfg.sub_grid_size)
+        kd_tree_path = join(new_dataset, seq_id, 'KDTree', frame_id + '.pkl')
 
         # Read pkl with search tree
         with open(kd_tree_path, 'rb') as f:
@@ -143,7 +142,7 @@ class SemanticKITTI:
             labels = np.zeros(np.shape(points)[0], dtype=np.uint8)
         else:
             labeled_point = self.labeled_point
-            label_path = join(self.dataset_path, seq_id, 'labels', frame_id + '.npy')
+            label_path = join(self.dataset_path, seq_id, 'labels', frame_id[:-4] + '.label.npy')
             labels = np.squeeze(np.load(label_path))
             if int(seq_id) != 8:
                 # ======================================== #
@@ -156,7 +155,9 @@ class SemanticKITTI:
                         r = float(labeled_point[:-1]) / 100
                         num_with_anno = max(int(num_pts * r), 1)
                         valid_idx = np.where(labels)[0]
-                        idx_with_anno = np.random.choice(valid_idx, num_with_anno, replace=False)
+                        #print(valid_idx.shape)
+                        #print(num_with_anno)
+                        idx_with_anno = np.random.choice(valid_idx, valid_idx.shape[0], replace=False)
                         new_labels[idx_with_anno] = labels[idx_with_anno]
                         labels = new_labels
                     else:

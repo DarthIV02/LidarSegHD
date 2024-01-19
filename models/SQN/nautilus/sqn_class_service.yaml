@@ -16,13 +16,11 @@ spec:
     spec:
       containers:
       - name: sqn-seg-pod
-        image: ghcr.io/darthiv02/sqn_model_complete:1.4
+        image: ghcr.io/darthiv02/sqn_model_complete:1.2
         command: ["sleep", "infinity"]
         volumeMounts:
           - mountPath: /root/dataset
             name: tls-data-ivannia
-          - mountPath: /root/dataset-5
-            name: tls-data-ivannia-5
         resources:
           limits:
             nvidia.com/gpu: "1"
@@ -35,9 +33,6 @@ spec:
         - name: tls-data-ivannia
           persistentVolumeClaim:
             claimName: tls-data-ivannia
-        - name: tls-data-ivannia-5
-          persistentVolumeClaim:
-            claimName: tls-data-ivannia-5
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

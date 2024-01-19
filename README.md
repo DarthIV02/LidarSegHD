@@ -21,6 +21,7 @@ Can be run with the package _cenet_image:1.3_ in this repository. To start compi
 
 ```bash
 sh tf_interpolate_compile.sh # at /SQN/tf_ops/3d_interpolation
+python data_prepare_personalized.py # at /SQN/utils
 python main_TLS_kitti.py --mode train --gpu 0 --labeled_point 100%
 ```
 

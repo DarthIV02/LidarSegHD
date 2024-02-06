@@ -32,4 +32,4 @@ Can be run with the package _cylinder3d_image:1.3_ in this repository. To start 
 python -u train_cylinder_asym_tls.py 2>&1 | tee cylinder_logs_tee.txt #training
 python demo_folder.py --demo-folder /root/dataset/dense_dataset_semantic/sequences/01/velodyne/ --save-folder ./save --demo-label-folder /root/dataset/dense_dataset_semantic/sequences/01/labels/ # testing?
 ```
-Make sure to move trained model from model_save_dir to model_load_dir once the training is done.
+Make sure to move trained model from model_save_dir to model_load_dir once the training is done. And config/TLS.yaml needs to be setup correctly.

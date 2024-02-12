@@ -122,7 +122,10 @@ class SegmentHD:
         for label in range(1, self.num_classes+1):
             classes_id = torch.where(labels == label)
             if(classes_id[0].shape[0] != 0):
-                ids = np.random.choice(range(classes_id[0].shape[0]), size=self.training_samples_per_class, replace=False)
+                if classes_id[0].shape[0] > self.training_samples_per_class:
+                    ids = np.random.choice(range(classes_id[0].shape[0]), size=self.training_samples_per_class, replace=False)
+                else:
+                    ids = np.random.choice(range(classes_id[0].shape[0]), size=classes_id[0].shape[0], replace=False)
                 training_samples = classes_id[0][ids] # Choose 100 points for training
                 for i, point in zip(training_samples, points[training_samples]): # id, xyz of points
                     #current_point_graph = model.encode_graph(i, point, points, labels, A[i]) #<- With sklearn

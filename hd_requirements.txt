@@ -48,7 +48,6 @@ tensorboard==2.15.2
 tensorboard-data-server==0.7.2
 tensorboard-logger==0.1.0
 termcolor==2.4.0
-threadpoolctl==3.2.0
 torch==2.1.2+cu121
 torch-hd==5.4.1
 torchaudio==2.1.2+cu121

@@ -81,7 +81,7 @@ class SegmentHD:
         y = input[:,1]
         z = input[:,2]
 
-        enc_points = torch.zeros(self.d)
+        enc_points = torch.zeros((1,self.d))
         mean = torch.tensor([torch.mean(x), torch.mean(y), torch.mean(z)], device=self.opt.device)
         diffs = input - mean
         var = torch.mean(torch.pow(diffs, 2.0), 0)

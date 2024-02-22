@@ -72,7 +72,7 @@ class SegmentHD:
         #self.i_emb = self.i_emb.to(*args)
         return self
 
-    def encode_points(self, x, y, z, input=None, int=None, features = [True]*7):
+    def encode_points(self, x, y, z, input=None, int=None, features = [True]*6):
         # Encode points x,y,z,int = Torch vectors
         x_vec = x
         y_vec = y
@@ -92,16 +92,16 @@ class SegmentHD:
             enc_points += self.x_emb(torch.tensor(x_vec)) + self.y_emb(torch.tensor(y_vec)) + self.z_emb(torch.tensor(z_vec))
         if features[1]:
             enc_points += self.h_emb(torch.tensor(z)) # Height enc_points
+        #if features[2]:
+        #    enc_points += self.mean_emb(mean) # Mean of x,y,z
         if features[2]:
-            enc_points += self.mean_emb(mean) # Mean of x,y,z
-        if features[3]:
             enc_points += self.var_emb(var)
-        if features[4]:
+        if features[3]:
             enc_points += self.std_emb(std)
-        if features[5]:
+        if features[4]:
             skews = torch.mean(torch.pow(zscores, 3.0), 0)
             enc_points = enc_points + self.skew_emb(skews)
-        if features[6]:
+        if features[5]:
             kurtoses = torch.mean(torch.pow(zscores, 4.0), 0) - 3.0
             enc_points = enc_points + self.kurt_emb(kurtoses)
 
@@ -134,7 +134,7 @@ class SegmentHD:
         #max_y, min_y = torch.max(points[:,1][close_points]), torch.min(points[:,1][close_points])
         #max_z, min_z = torch.max(points[:,2][close_points]), torch.min(points[:,2][close_points])
         #vectors_closest_points = points[:,:3][close_points] - torch.tensor([((max_x-min_x)/2)+min_x, ((max_y-min_y)/2)+min_y, ((max_z-min_z)/2)+min_z], device=self.opt.device)
-        features = [True]*7
+        features = [True]*6
         features[self.opt.features] = False
         enc_vectors = self.encode_points(vectors_closest_points[:, 0], vectors_closest_points[:, 1], vectors_closest_points[:, 2], points[:,:3][close_points], features=features) # In case of intensity points[close_points][:, 3]
         #enc_vectors = self.encode_points(vectors_closest_points, input=points[:,:3][close_points])

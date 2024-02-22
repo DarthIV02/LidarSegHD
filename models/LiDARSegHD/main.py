@@ -256,13 +256,13 @@ def parse_option():
                         help='Number of KNN to consider for point encoding')
     parser.add_argument('--number_of_choices_training', type=int, default=300,
                         help='Number of points per class per file for training')
-    parser.add_argument('--number_of_choices_testing', type=int, default=5000,
+    parser.add_argument('--number_of_choices_testing', type=int, default=200,
                         help='Number of points per class per file for testing')
     parser.add_argument('--features', type=int, default=0,
                         help='Features missing')
     parser.add_argument('--epochs', type=int, default=1,
                         help='number of training epochs or number of passes on dataset')
-    parser.add_argument('--val_rate', type=int, default=25,
+    parser.add_argument('--val_rate', type=int, default=5,
                         help='Test the model every val_rate files')
     
     parser.add_argument('--num_workers', type=int, default=1,

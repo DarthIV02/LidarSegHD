@@ -94,14 +94,14 @@ class SegmentHD:
             enc_points += self.h_emb(torch.tensor(z)) # Height enc_points
         if features[2]:
             enc_points += self.mean_emb(mean) # Mean of x,y,z
-        if features[2]:
-            enc_points += self.var_emb(var)
         if features[3]:
-            enc_points += self.std_emb(std)
+            enc_points += self.var_emb(var)
         if features[4]:
+            enc_points += self.std_emb(std)
+        if features[5]:
             skews = torch.mean(torch.pow(zscores, 3.0), 0)
             enc_points = enc_points + self.skew_emb(skews)
-        if features[5]:
+        if features[6]:
             kurtoses = torch.mean(torch.pow(zscores, 4.0), 0) - 3.0
             enc_points = enc_points + self.kurt_emb(kurtoses)
 

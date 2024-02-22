@@ -136,7 +136,7 @@ class SegmentHD:
         #vectors_closest_points = points[:,:3][close_points] - torch.tensor([((max_x-min_x)/2)+min_x, ((max_y-min_y)/2)+min_y, ((max_z-min_z)/2)+min_z], device=self.opt.device)
         features = [True]*7
         features[self.opt.features] = False
-        enc_vectors = self.encode_points(vectors_closest_points[:, 0], vectors_closest_points[:, 1], vectors_closest_points[:, 2], points[:,:3][close_points], features) # In case of intensity points[close_points][:, 3]
+        enc_vectors = self.encode_points(vectors_closest_points[:, 0], vectors_closest_points[:, 1], vectors_closest_points[:, 2], points[:,:3][close_points], features=features) # In case of intensity points[close_points][:, 3]
         #enc_vectors = self.encode_points(vectors_closest_points, input=points[:,:3][close_points])
         
         if labels != None:

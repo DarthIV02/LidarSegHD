@@ -72,7 +72,7 @@ class SegmentHD:
         #self.i_emb = self.i_emb.to(*args)
         return self
 
-    def encode_points(self, x, y, z, input=None, int=None, features = [True]*6):
+    def encode_points(self, x, y, z, input=None, int=None, features = [False]*7):
         # Encode points x,y,z,int = Torch vectors
         x_vec = x
         y_vec = y
@@ -92,8 +92,8 @@ class SegmentHD:
             enc_points += self.x_emb(torch.tensor(x_vec)) + self.y_emb(torch.tensor(y_vec)) + self.z_emb(torch.tensor(z_vec))
         if features[1]:
             enc_points += self.h_emb(torch.tensor(z)) # Height enc_points
-        #if features[2]:
-        #    enc_points += self.mean_emb(mean) # Mean of x,y,z
+        if features[2]:
+            enc_points += self.mean_emb(mean) # Mean of x,y,z
         if features[2]:
             enc_points += self.var_emb(var)
         if features[3]:
@@ -134,8 +134,8 @@ class SegmentHD:
         #max_y, min_y = torch.max(points[:,1][close_points]), torch.min(points[:,1][close_points])
         #max_z, min_z = torch.max(points[:,2][close_points]), torch.min(points[:,2][close_points])
         #vectors_closest_points = points[:,:3][close_points] - torch.tensor([((max_x-min_x)/2)+min_x, ((max_y-min_y)/2)+min_y, ((max_z-min_z)/2)+min_z], device=self.opt.device)
-        features = [True]*6
-        features[self.opt.features] = False
+        features = [False]*7
+        features[self.opt.features] = True
         enc_vectors = self.encode_points(vectors_closest_points[:, 0], vectors_closest_points[:, 1], vectors_closest_points[:, 2], points[:,:3][close_points], features=features) # In case of intensity points[close_points][:, 3]
         #enc_vectors = self.encode_points(vectors_closest_points, input=points[:,:3][close_points])
         
@@ -256,13 +256,13 @@ def parse_option():
                         help='Number of KNN to consider for point encoding')
     parser.add_argument('--number_of_choices_training', type=int, default=300,
                         help='Number of points per class per file for training')
-    parser.add_argument('--number_of_choices_testing', type=int, default=200,
+    parser.add_argument('--number_of_choices_testing', type=int, default=5000,
                         help='Number of points per class per file for testing')
     parser.add_argument('--features', type=int, default=0,
                         help='Features missing')
     parser.add_argument('--epochs', type=int, default=1,
                         help='number of training epochs or number of passes on dataset')
-    parser.add_argument('--val_rate', type=int, default=5,
+    parser.add_argument('--val_rate', type=int, default=25,
                         help='Test the model every val_rate files')
     
     parser.add_argument('--num_workers', type=int, default=1,

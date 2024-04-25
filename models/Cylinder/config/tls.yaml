@@ -13,7 +13,7 @@ model_params:
 
   fea_dim: 9
   out_fea_dim: 256
-  num_class: 20
+  num_class: 6
   num_input_features: 16
   use_norm: True
   init_size: 32
@@ -57,9 +57,9 @@ val_data_loader:
 ###################
 ## Train params
 train_params:
-  model_load_path: "./model_load_dir/model_load.pt"
+  model_load_path: "./model_save_dir/model_save.pt"
   model_save_path: "./model_save_dir/model_save.pt"
-  checkpoint_every_n_steps: 4599
-  max_num_epochs: 40
-  eval_every_n_steps: 4599
-  learning_rate: 0.001
+  checkpoint_every_n_steps: 4
+  max_num_epochs: 60
+  eval_every_n_steps: 4
+  learning_rate: 0.01

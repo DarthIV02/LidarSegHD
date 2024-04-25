@@ -182,7 +182,7 @@ class Network:
                                      lambda: batch_anno_xyz)
 
         feature = tf.layers.dense(feature, 8, activation=None, name='fc0')
-        feature = tf.nn.leaky_relu(tf.layers.batch_normalization(feature, -1, 0.99, 1e-6, training=False)) #is_training
+        feature = tf.nn.leaky_relu(tf.layers.batch_normalization(feature, -1, 0.99, 1e-6, training=True)) #is_training
         feature = tf.expand_dims(feature, axis=2)
 
         # ###########################Encoder############################
@@ -193,7 +193,7 @@ class Network:
                                                          inputs['sub_idx'][i])
 
             f_encoder_i = self.dilated_res_block(feature, xyz, neigh_idx, d_out[i],
-                                                 'Encoder_layer_' + str(i), False) #is_training
+                                                 'Encoder_layer_' + str(i), True) #is_training
             f_sampled_i = self.random_sample(f_encoder_i, sub_idx)
             feature = f_sampled_i
             if i == 0:
@@ -215,14 +215,14 @@ class Network:
         interpolated_points = tf.concat(f_interp, axis=-1)
         interpolated_points = tf.expand_dims(interpolated_points, axis=2)
         interpolated_points = tf_util.conv2d(interpolated_points, 256, [1, 1], 'if_1', [1, 1], 'VALID', True,
-                                             False) #is_training
+                                             True) #is_training
         interpolated_points = tf_util.conv2d(interpolated_points, 128, [1, 1], 'if_2', [1, 1], 'VALID', True,
-                                             False) #is_training
+                                             True) #is_training
         interpolated_points = tf_util.conv2d(interpolated_points, 64, [1, 1], 'if_3', [1, 1], 'VALID', True,
-                                             False) #is_training
+                                             True) #is_training
 
-        f_layer_fc1 = tf_util.conv2d(interpolated_points, 64, [1, 1], 'fc1', [1, 1], 'VALID', True, False) #is_training
-        f_layer_fc2 = tf_util.conv2d(f_layer_fc1, 32, [1, 1], 'fc2', [1, 1], 'VALID', True, False) #is_training
+        f_layer_fc1 = tf_util.conv2d(interpolated_points, 64, [1, 1], 'fc1', [1, 1], 'VALID', True, True) #is_training
+        f_layer_fc2 = tf_util.conv2d(f_layer_fc1, 32, [1, 1], 'fc2', [1, 1], 'VALID', True, True) #is_training
         f_layer_fc3 = tf_util.conv2d(f_layer_fc2, self.classes, [1, 1], 'fc', [1, 1], 'VALID', False,
                                      is_training, activation_fn=None) #is_training
         f_out = tf.squeeze(f_layer_fc3, [2])
@@ -251,14 +251,14 @@ class Network:
                 _, _, summary, l_out, probs, labels, acc = self.sess.run(ops, {self.is_training: True})
                 self.train_writer.add_summary(summary, self.training_step)
                 t_end = time.time()
-                if self.training_step % 50 == 0:
+                if self.training_step % 1 == 0:
                     message = 'Step {:08d} L_out={:5.3f} Acc={:4.2f} ''---{:8.2f} ms/batch'
                     log_out(message.format(self.training_step, l_out, acc, 1000 * (t_end - t_start)), self.Log_file)
                 self.training_step += 1
 
             except tf.errors.OutOfRangeError:
 
-                if dataset.use_val and self.training_epoch % 2 == 0:  # and self.training_epoch > 20
+                if dataset.use_val and self.training_epoch % 1 == 0:  # and self.training_epoch > 20
                     m_iou = self.evaluate(dataset, self.training_epoch)
                     if m_iou > np.max(self.mIou_list):
                         # Save the best model
@@ -366,7 +366,7 @@ class Network:
             try:
                 ops = (self.prob_logits, self.labels, self.accuracy)
                 #stacked_prob, labels, acc = self.sess.run(ops, {self.is_training: False,  self.is_not_transfering: False})
-                stacked_prob, labels, acc = self.sess.run(ops, {self.is_training: False})
+                stacked_prob, labels, acc = self.sess.run(ops, {self.is_training: True})
                 pred = np.argmax(stacked_prob, 1)
                 if not self.config.ignored_label_inds:
                     pred_valid = pred

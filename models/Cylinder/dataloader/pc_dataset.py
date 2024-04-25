@@ -28,7 +28,7 @@ def get_pc_model_class(name):
 @register_dataset
 class SemKITTI_demo(data.Dataset):
     def __init__(self, data_path, imageset='demo',
-                 return_ref=True, label_mapping="semantic-kitti.yaml", demo_label_path=None):
+                 return_ref=True, label_mapping="tls.yaml", demo_label_path=None):
         with open(label_mapping, 'r') as stream:
             semkittiyaml = yaml.safe_load(stream)
         self.learning_map = semkittiyaml['learning_map']
@@ -63,7 +63,7 @@ class SemKITTI_demo(data.Dataset):
 @register_dataset
 class SemKITTI_sk(data.Dataset):
     def __init__(self, data_path, imageset='train',
-                 return_ref=False, label_mapping="semantic-kitti.yaml", nusc=None):
+                 return_ref=False, label_mapping="tls.yaml", nusc=None):
         self.return_ref = return_ref
         with open(label_mapping, 'r') as stream:
             semkittiyaml = yaml.safe_load(stream)
@@ -75,6 +75,7 @@ class SemKITTI_sk(data.Dataset):
             split = semkittiyaml['split']['valid']
         elif imageset == 'test':
             split = semkittiyaml['split']['test']
+            print(split)
         else:
             raise Exception('Split must be train/val/test')
 

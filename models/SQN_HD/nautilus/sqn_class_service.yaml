@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sqn-seg
+  labels:
+    k8s-app: sqn-seg
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: sqn-seg
+  template:
+    metadata: 
+      labels:
+        k8s-app: sqn-seg
+    spec:
+      containers:
+      - name: sqn-seg-pod
+        image: ghcr.io/darthiv02/sqn_model_complete:1.4 # Had 1.2
+        command: ["sleep", "infinity"]
+        volumeMounts:
+          - mountPath: /root/dataset
+            name: tls-data-ivannia-5
+        resources:
+          limits:
+            nvidia.com/gpu: "1"
+            memory: "16G"
+            cpu: "1"
+          requests:
+             memory: "16G"
+             cpu: "1"
+      volumes:
+        - name: tls-data-ivannia-5
+          persistentVolumeClaim:
+            claimName: tls-data-ivannia-5
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: nvidia.com/gpu.product
+                operator: In
+                values:
+                - NVIDIA-GeForce-GTX-1080-Ti

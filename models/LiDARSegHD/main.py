@@ -10,6 +10,8 @@ import argparse
 import tensorboard_logger as tb_logger
 import random
 import laspy
+from sklearn.neighbors import KDTree
+import rff
 
 class SegmentHD:
 
@@ -37,6 +39,7 @@ class SegmentHD:
         self.std_emb = torchhd.embeddings.Sinusoid(3, self.d)
         self.skew_emb = torchhd.embeddings.Sinusoid(3, self.d)
         self.kurt_emb = torchhd.embeddings.Sinusoid(3, self.d)
+        self.kernel_dens = rff.layers.GaussianEncoding(sigma=10.0, input_size=3, encoded_size=self.d/2)
         #self.var = torchhd.random(4, self.d) # x, y, z, i 
         self.classes_hv = torch.zeros(self.num_classes, self.d) # alive, 1h, 10h, 100h, 1000h
         self.count_matrix = torch.zeros(self.num_classes, self.num_classes)
@@ -69,10 +72,11 @@ class SegmentHD:
         self.std_emb = self.std_emb.to(*args)
         self.skew_emb = self.skew_emb.to(*args)
         self.kurt_emb = self.kurt_emb.to(*args)
+        self.kernel_dens = self.kernel_dens.to(*args)
         #self.i_emb = self.i_emb.to(*args)
         return self
 
-    def encode_points(self, x, y, z, input=None, int=None, features = [False]*7):
+    def encode_points(self, x, y, z, input=None, int=None, features = [True]*7):
         # Encode points x,y,z,int = Torch vectors
         x_vec = x
         y_vec = y
@@ -89,21 +93,25 @@ class SegmentHD:
         zscores = diffs / std
 
         if features[0]:
-            enc_points += self.x_emb(torch.tensor(x_vec)) + self.y_emb(torch.tensor(y_vec)) + self.z_emb(torch.tensor(z_vec))
+            enc_points += self.x_emb(torch.tensor(x_vec)).sign() + self.y_emb(torch.tensor(y_vec)).sign() + self.z_emb(torch.tensor(z_vec)).sign()
+            enc_points = enc_points.sign()
         if features[1]:
-            enc_points += self.h_emb(torch.tensor(z)) # Height enc_points
+            enc_points += self.h_emb(torch.tensor(z)).sign() # Height enc_points
         if features[2]:
-            enc_points += self.mean_emb(mean) # Mean of x,y,z
+            enc_points += self.mean_emb(mean).sign() # Mean of x,y,z
         if features[3]:
-            enc_points += self.var_emb(var)
+            enc_points += self.var_emb(var).sign()
         if features[4]:
-            enc_points += self.std_emb(std)
+            enc_points += self.std_emb(std).sign()
         if features[5]:
             skews = torch.mean(torch.pow(zscores, 3.0), 0)
-            enc_points = enc_points + self.skew_emb(skews)
+            enc_points += self.skew_emb(skews).sign()
         if features[6]:
             kurtoses = torch.mean(torch.pow(zscores, 4.0), 0) - 3.0
-            enc_points = enc_points + self.kurt_emb(kurtoses)
+            enc_points += self.kurt_emb(kurtoses).sign()
+        if features[7]:
+
+
 
         #enc_points = self.x_y_z_emb(torch.tensor(input[:,2])) # Actually just height
         #e_final = torch.zeros(self.d, device=self.opt.device)
@@ -118,7 +126,8 @@ class SegmentHD:
         
         # Test to encode the vectors based on the closest points
         if (distances == None):
-            close_points = self.get_close_points_euclidean(point[:3], points[:,:3])
+            distances, close_points = self.tree.query(torch.reshape(point, (1,3)), self.num_closest_points+1)
+            close_points = close_points[0][1:]
             #new_id = np.where(close_points == id_point) # In only closest points
             #close_points = np.delete(close_points, new_id)
         else:
@@ -134,9 +143,9 @@ class SegmentHD:
         #max_y, min_y = torch.max(points[:,1][close_points]), torch.min(points[:,1][close_points])
         #max_z, min_z = torch.max(points[:,2][close_points]), torch.min(points[:,2][close_points])
         #vectors_closest_points = points[:,:3][close_points] - torch.tensor([((max_x-min_x)/2)+min_x, ((max_y-min_y)/2)+min_y, ((max_z-min_z)/2)+min_z], device=self.opt.device)
-        features = [False]*7
-        features[self.opt.features] = True
-        enc_vectors = self.encode_points(vectors_closest_points[:, 0], vectors_closest_points[:, 1], vectors_closest_points[:, 2], points[:,:3][close_points], features=features) # In case of intensity points[close_points][:, 3]
+        #features = [False]*7
+        #features[self.opt.features] = True
+        enc_vectors = self.encode_points(vectors_closest_points[:, 0], vectors_closest_points[:, 1], vectors_closest_points[:, 2], points[:,:3][close_points]) # In case of intensity points[close_points][:, 3]
         #enc_vectors = self.encode_points(vectors_closest_points, input=points[:,:3][close_points])
         
         if labels != None:
@@ -166,6 +175,7 @@ class SegmentHD:
     def train(self, points, labels, file_idx):
         #A = neighbors.kneighbors_graph(points, self.num_closest_points, mode='connectivity', include_self=False) #<- With sklearn
         #A = neighbors.radius_neighbors_graph(points, 0.5, mode='connectivity', include_self=False)
+        self.tree = KDTree(points)
         for label in range(1, self.num_classes+1):
             classes_id = torch.where(labels == label)
             if(classes_id[0].shape[0] != 0):
@@ -254,7 +264,7 @@ def parse_option():
                         help='Learning Rate for HD training')
     parser.add_argument('--number_close_points', type=int, default=50,
                         help='Number of KNN to consider for point encoding')
-    parser.add_argument('--number_of_choices_training', type=int, default=300,
+    parser.add_argument('--number_of_choices_training', type=int, default=1000,
                         help='Number of points per class per file for training')
     parser.add_argument('--number_of_choices_testing', type=int, default=200,
                         help='Number of points per class per file for testing')
@@ -262,7 +272,7 @@ def parse_option():
                         help='Features missing')
     parser.add_argument('--epochs', type=int, default=1,
                         help='number of training epochs or number of passes on dataset')
-    parser.add_argument('--val_rate', type=int, default=5,
+    parser.add_argument('--val_rate', type=int, default=1,
                         help='Test the model every val_rate files')
     
     parser.add_argument('--num_workers', type=int, default=1,
@@ -270,7 +280,7 @@ def parse_option():
     parser.add_argument('--trial', type=int, default=0,
                         help='id for recording multiple runs')
 
-    parser.add_argument('--dataset_path', type=str, default="Dataset_TLS/dense_dataset_subsample/sequences/",
+    parser.add_argument('--dataset_path', type=str, default="Dataset_TLS/dense_dataset_subsample_2/sequences/",
                         help='Path to the folder sequences')
     
 

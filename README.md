@@ -33,8 +33,6 @@ python data_prepare_personalized.py # at /SQN/utils
 
 # Train
 python main_TLS_kitti.py --mode train --gpu 0 --labeled_point 100%
-# Test
-python main_TLS_kitti.py --mode test --gpu 0 --labeled_point 100%
 ```
 
 ### [Cylinder3D](https://github.com/xinge008/Cylinder3D)

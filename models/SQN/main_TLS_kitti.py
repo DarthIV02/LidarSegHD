@@ -69,6 +69,7 @@ class SemanticKITTI:
                     cloud_ind = i
                     pc_path = path_list[cloud_ind]
                     pc, tree, labels = self.get_data(pc_path)
+                    print("Shape: ", pc.shape)
                     # crop a small point cloud
                     pick_idx = np.random.choice(len(pc), 1)
                     selected_pc, selected_labels, selected_idx = self.crop_pc(pc, labels, tree, pick_idx)

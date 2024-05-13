@@ -26,6 +26,7 @@ dpkg -i libcudnn7_7.5.1.10-1+cuda9.0_amd64.deb
 wget https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64/libcudnn7-dev_7.5.1.10-1+cuda9.0_amd64.deb
 dpkg -i libcudnn7-dev_7.5.1.10-1+cuda9.0_amd64.deb
 sh tf_interpolate_compile.sh # at /SQN/tf_ops/3d_interpolation
+kubectl cp models\SQN <pod>:/root
 
 # Prepare data in polygons
 python data_prepare_personalized.py # at /SQN/utils
